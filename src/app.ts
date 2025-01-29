@@ -1,10 +1,17 @@
-console.log("asdjfnaklñjsdn");
+import { envs } from "./config";
+import { AppRoutes } from "./presentation/routes";
+import { Server } from "./presentation/server";
 
-const as = "";
 
+(async () => {
+    main();
+})();
 
-const b = ""
+async function main() {
+    const server = new Server({
+        port: envs.PORT,
+        routes: AppRoutes.routes
+    });
 
-function asds() {
-    console.log("first");
+    server.start();
 }
