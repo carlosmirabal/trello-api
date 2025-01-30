@@ -1,7 +1,7 @@
-import { JWTAdapter } from "@/config";
-import { bcryptAdapter } from "@/config/bcrypt.adapter";
-import { prisma } from "@/data/postgres";
-import { CustomError, RegisterUserDto } from "@/domain";
+import { JWTAdapter } from "../../config";
+import { bcryptAdapter } from "../../config/bcrypt.adapter";
+import { prisma } from "../../data/postgres";
+import { CustomError, RegisterUserDto } from "../../domain";
 
 export class AuthService {
     constructor() {}
@@ -15,7 +15,7 @@ export class AuthService {
             },
         });
 
-        if (existUser) CustomError.badRequest(`User with email ${email} already exists`);
+        if (existUser) throw CustomError.badRequest(`User with email ${email} already exists`);
 
         try {
             // Encrypt the password
@@ -28,11 +28,12 @@ export class AuthService {
             //TODO: Implement email confirmation
 
             // Generate token
-            const token = JWTAdapter.generateToken({ id: newUser.id });
-            if (!token) CustomError.internalServer("Error while generating token");
+            const token = await JWTAdapter.generateToken({ id: newUser.id });
+            if (!token) throw CustomError.internalServer("Error while generating token");
 
             return { user: newUser, token };
         } catch (error) {
+            console.log(error);
             throw CustomError.internalServer("Internal server error");
         }
     };

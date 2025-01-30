@@ -1,6 +1,6 @@
-import { CustomError, RegisterUserDto } from "@/domain";
 import { Request, Response } from "express";
 import { AuthService } from "../services/auth.service";
+import { CustomError, RegisterUserDto } from "../../domain";
 
 export class AuthController {
     //DI
@@ -20,6 +20,7 @@ export class AuthController {
 
         if (error) {
             res.status(400).json({ error });
+            return;
         }
 
         // Create the user
