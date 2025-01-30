@@ -1,0 +1,108 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_URL")
+}
+
+model board_lists {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name      String    @db.VarChar(255)
+  createdAt DateTime? @default(now()) @db.Timestamp(6)
+  boardId   String    @db.Uuid
+  boards    boards    @relation(fields: [boardId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_board")
+  cards     cards[]
+}
+
+model boards {
+  id            String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name          String          @db.VarChar(255)
+  description   String?
+  createdAt     DateTime?       @default(now()) @db.Timestamp(6)
+  workspace_id  String          @db.Uuid
+  isActived     Boolean?        @default(true)
+  board_lists   board_lists[]
+  workspaces    workspaces      @relation(fields: [workspace_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_workspace")
+  collaborators collaborators[]
+}
+
+model card_logs {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  status    String    @db.VarChar(100)
+  createdAt DateTime? @default(now()) @db.Timestamp(6)
+  cardId    String    @db.Uuid
+  cards     cards     @relation(fields: [cardId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_card")
+}
+
+model cards {
+  id                  String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title               String                @db.VarChar(255)
+  description         String?
+  boardListId         String                @db.Uuid
+  createdAt           DateTime?             @default(now()) @db.Timestamp(6)
+  card_logs           card_logs[]
+  board_lists         board_lists           @relation(fields: [boardListId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_board_list")
+  collaborators_cards collaborators_cards[]
+}
+
+model collaborators {
+  id                  String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  users_id            Int
+  boards_id           String                @db.Uuid
+  role_id             Int
+  createdAt           DateTime?             @default(now()) @db.Timestamp(6)
+  boards              boards                @relation(fields: [boards_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_board")
+  roles               roles                 @relation(fields: [role_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_role")
+  users               users                 @relation(fields: [users_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user")
+  collaborators_cards collaborators_cards[]
+}
+
+model collaborators_cards {
+  id               String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  collaborators_id String        @db.Uuid
+  cards_id         String        @db.Uuid
+  createdAt        DateTime?     @default(now()) @db.Timestamp(6)
+  cards            cards         @relation(fields: [cards_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_card")
+  collaborators    collaborators @relation(fields: [collaborators_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_collaborator")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model labels {
+  id   String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name String @db.VarChar(100)
+}
+
+model roles {
+  id            Int             @id @default(autoincrement())
+  name          String          @unique @db.VarChar(100)
+  isActived     Boolean?        @default(true)
+  createdAt     DateTime?       @default(now()) @db.Timestamp(6)
+  collaborators collaborators[]
+}
+
+model users {
+  id            Int             @id @default(autoincrement())
+  email         String          @unique @db.VarChar(255)
+  password      String          @db.VarChar(255)
+  name          String          @db.VarChar(100)
+  lastName      String?         @db.VarChar(100)
+  phoneNumber   String?         @db.VarChar(20)
+  isVerified    Boolean?        @default(false)
+  isActived     Boolean?        @default(true)
+  createdAt     DateTime?       @default(now()) @db.Timestamp(6)
+  collaborators collaborators[]
+  workspaces    workspaces[]
+}
+
+model workspaces {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String    @db.VarChar(255)
+  description String?
+  ownerId     Int
+  createdAt   DateTime? @default(now()) @db.Timestamp(6)
+  isActived   Boolean?  @default(true)
+  boards      boards[]
+  users       users     @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_owner")
+}
