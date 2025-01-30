@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-
+import { AuthRoutes } from "./auth/routes";
 
 export class AppRoutes {
     static get routes(): Router {
@@ -7,9 +7,7 @@ export class AppRoutes {
 
         // Definir las rutas
         // router.use('/api/todos', /*TodoRoutes.routes */ );
-        router.get("/api/", (req: Request, res: Response) => {
-            res.json('Get API')
-        })
+        router.use("/api/auth", AuthRoutes.routes);
 
         return router;
     }
