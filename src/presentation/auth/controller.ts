@@ -45,4 +45,8 @@ export class AuthController {
             .then((user) => res.json(user)) // Return the user and the token
             .catch((error) => this.handleError(error, res));
     };
+
+    validateEmail = (req: Request, res: Response) => {
+        const token = req.params.token;
+    };
 }
