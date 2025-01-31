@@ -1,7 +1,7 @@
 import { JWTAdapter } from "../../config";
 import { bcryptAdapter } from "../../config/bcrypt.adapter";
 import { prisma } from "../../data/postgres";
-import { CustomError, RegisterUserDto } from "../../domain";
+import { CustomError, LoginUserDto, RegisterUserDto } from "../../domain";
 
 export class AuthService {
     constructor() {}
@@ -35,6 +35,30 @@ export class AuthService {
         } catch (error) {
             console.log(error);
             throw CustomError.internalServer("Internal server error");
+        }
+    };
+
+    loginUser = async (loginDto: LoginUserDto) => {
+        const { email, password } = loginDto;
+
+        try {
+            // Find the user
+            const user = await prisma.users.findFirst({ where: { email } });
+
+            if (!user) throw CustomError.badRequest("User not found");
+
+            // Compare the password
+            const passwordMatch = await bcryptAdapter.compare(password, user.password);
+
+            if (!passwordMatch) throw CustomError.badRequest("Invalid credentials");
+
+            // Generate token
+            const token = await JWTAdapter.generateToken({ id: user.id });
+
+            // Return the user and the token
+            return { user, token };
+        } catch (error) {
+            CustomError.internalServer();
         }
     };
 }
