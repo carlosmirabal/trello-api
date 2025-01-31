@@ -41,12 +41,12 @@ export class AuthService {
     loginUser = async (loginDto: LoginUserDto) => {
         const { email, password } = loginDto;
 
+        // Find the user
+        const user = await prisma.users.findFirst({ where: { email } });
+
+        if (!user) throw CustomError.badRequest("User not found");
+
         try {
-            // Find the user
-            const user = await prisma.users.findFirst({ where: { email } });
-
-            if (!user) throw CustomError.badRequest("User not found");
-
             // Compare the password
             const passwordMatch = await bcryptAdapter.compare(password, user.password);
 
