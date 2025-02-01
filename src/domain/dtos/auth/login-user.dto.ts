@@ -1,4 +1,4 @@
-import { regularExps } from "../../config/regular-exp";
+import { regularExps } from "../../../config/regular-exp";
 
 export class LoginUserDto {
     private constructor(public email: string, public password: string) {}

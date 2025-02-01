@@ -1,6 +1,6 @@
 // DATA TRANSFER OBJECTS -> DTO
 
-import { regularExps } from "../../config/regular-exp";
+import { regularExps } from "../../../config/regular-exp";
 
 /**
  * Register User DTO
