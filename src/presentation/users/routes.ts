@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { UserService } from "../services/user.service";
 import { UserController } from "./controller";
+import { AuthMiddleware } from "../middlewares/auth.middleware";
 
 export class UserRoutes {
     static get routes(): Router {
@@ -10,7 +11,10 @@ export class UserRoutes {
 
         const controller = new UserController(userService);
 
-        // Definir las rutas
+        //Middleware
+        router.use(AuthMiddleware.validateJWT);
+
+        // Routes definition
         router.get("/", controller.getUsers);
         router.get("/:id", controller.getUserById);
 
