@@ -17,6 +17,8 @@ export class UserRoutes {
         // Routes definition
         router.get("/", controller.getUsers);
         router.get("/:id", controller.getUserById);
+        router.put("/:id", controller.updateUser);
+        // Inactivate user
 
         return router;
     }

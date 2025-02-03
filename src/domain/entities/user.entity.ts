@@ -8,9 +8,9 @@ export class UserEntity {
     constructor(
         public id: string,
         public email: string,
-        public password: string,
         public name: string,
         public lastName?: string,
+        public password?: string,
         public phoneNumber?: string,
         public isVerified?: boolean,
         public isActived?: boolean,
@@ -40,7 +40,7 @@ export class UserEntity {
 
         if (!id) throw CustomError.badRequest("Missing ID");
         if (!email) throw CustomError.badRequest("Missing email");
-        if (!password) throw CustomError.badRequest("Missing password");
+        // if (!password) throw CustomError.badRequest("Missing password");
         if (!name) throw CustomError.badRequest("Missing name");
 
         return new UserEntity(

@@ -1,5 +1,6 @@
 import { prisma } from "../../data/postgres";
 import { CustomError, UserEntity } from "../../domain";
+import { UpdateUserDto } from "../../domain/dtos/user/update-user.dto";
 
 export class UserService {
     contructor() {}
@@ -28,5 +29,9 @@ export class UserService {
         } catch (error) {
             throw CustomError.internalServer();
         }
+    }
+
+    async updateUser(user: UpdateUserDto) {
+        // const
     }
 }
