@@ -34,7 +34,8 @@ export class AuthMiddleware {
                 return;
             }
 
-            req.body.user = UserEntity.fromObject(user);
+            // req.body.user = UserEntity.fromObject(user);
+            req.body = { user: UserEntity.fromObject(user), payload: req.body };
 
             next();
         } catch (error) {

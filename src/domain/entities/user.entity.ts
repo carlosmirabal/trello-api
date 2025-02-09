@@ -10,7 +10,6 @@ export class UserEntity {
         public email: string,
         public name: string,
         public lastName?: string,
-        public password?: string,
         public phoneNumber?: string,
         public isVerified?: boolean,
         public isActived?: boolean,
@@ -24,19 +23,8 @@ export class UserEntity {
      * @returns {Object} - Retorna un objeto con los datos de la entidad
      */
     static fromObject(object: { [key: string]: any }) {
-        const {
-            id,
-            email,
-            password,
-            name,
-            lastName,
-            phoneNumber,
-            isVerified,
-            isActived,
-            createdAt,
-            collaborators,
-            workSpaces,
-        } = object;
+        const { id, email, name, lastName, phoneNumber, isVerified, isActived, createdAt, collaborators, workSpaces } =
+            object;
 
         if (!id) throw CustomError.badRequest("Missing ID");
         if (!email) throw CustomError.badRequest("Missing email");
@@ -46,7 +34,6 @@ export class UserEntity {
         return new UserEntity(
             id,
             email,
-            password,
             name,
             lastName,
             phoneNumber,

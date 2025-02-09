@@ -23,7 +23,7 @@ export class UserService {
                 throw CustomError.notFound("User not found");
             }
 
-            const { password, ...userEntity } = UserEntity.fromObject(user);
+            const userEntity = UserEntity.fromObject(user);
 
             return userEntity;
         } catch (error) {
@@ -31,7 +31,16 @@ export class UserService {
         }
     }
 
-    async updateUser(user: UpdateUserDto) {
-        // const
+    async updateUser(userDto: UpdateUserDto) {
+        try {
+            const user = await prisma.users.update({
+                where: { id: userDto.id },
+                data: userDto,
+            });
+
+            return UserEntity.fromObject(user);
+        } catch (error) {
+            throw CustomError.internalServer();
+        }
     }
 }

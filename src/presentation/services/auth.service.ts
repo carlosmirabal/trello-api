@@ -25,7 +25,7 @@ export class AuthService {
             // Create the user
             const newUser = await prisma.users.create({ data: { ...registerDto, password: encryptPwd } });
 
-            const { password, ...userEntity } = UserEntity.fromObject(newUser);
+            const userEntity = UserEntity.fromObject(newUser);
 
             // Generate token
             const token = await JWTAdapter.generateToken({ id: newUser.id });

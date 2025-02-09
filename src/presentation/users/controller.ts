@@ -35,26 +35,24 @@ export class UserController {
             .catch((error) => this.handleError(error, res));
     };
 
+    // Solo puede editar su propio usuario
     updateUser = (req: Request, res: Response) => {
         const id = +req.params.id;
         if (isNaN(id)) {
             res.status(400).json({ error: `Invalid id: ${id}` });
             return;
         }
-        console.log(req.body);
 
-        // const [error, userDto] = UpdateUserDto.create(req.body);
+        const [error, userDto] = UpdateUserDto.create({ ...req.body.payload, id }, req.body.user.id);
 
-        // if (error) {
-        //     res.status(400).json({ error });
-        //     return;
-        // }
+        if (error) {
+            res.status(400).json({ error });
+            return;
+        }
 
-        // this.userService
-        //     .updateUser(userDto!)
-        //     .then((user) => res.json(user))
-        //     .catch((error) => this.handleError(error, res));
-
-        res.json({ message: `Updating user with id: ${id}` });
+        this.userService
+            .updateUser(userDto!)
+            .then((user) => res.json(user))
+            .catch((error) => this.handleError(error, res));
     };
 }

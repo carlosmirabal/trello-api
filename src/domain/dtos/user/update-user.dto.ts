@@ -1,5 +1,6 @@
 export class UpdateUserDto {
     private constructor(
+        public id: number,
         public email?: string,
         public name?: string,
         public lastName?: string,
@@ -7,11 +8,11 @@ export class UpdateUserDto {
         public isActived?: boolean
     ) {}
 
-    static create(object: { [key: string]: any }): [string?, UpdateUserDto?] {
-        const { email, name, lastName, phoneNumber, isActived } = object;
+    static create(object: { [key: string]: any }, userIdToken: number): [string?, UpdateUserDto?] {
+        const { id, email, name, lastName, phoneNumber, isActived } = object;
 
-        // ?: Validate body of request
+        if (id !== userIdToken) return ["You can only update your own user"];
 
-        return [undefined, new UpdateUserDto(email, name, lastName, phoneNumber, isActived)];
+        return [undefined, new UpdateUserDto(id, email, name, lastName, phoneNumber, isActived)];
     }
 }
