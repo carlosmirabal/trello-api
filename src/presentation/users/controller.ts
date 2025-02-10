@@ -14,10 +14,11 @@ export class UserController {
         return res.status(500).json({ error: "Internal server error" });
     };
 
-    //TODO: Implement QueryParams to filter users (email, name, actived)
     getUsers = (req: Request, res: Response) => {
+        const query = req.query;
+
         this.userService
-            .getUsers()
+            .getUsers(query)
             .then((users) => res.json(users))
             .catch((error) => this.handleError(error, res));
     };

@@ -2,12 +2,28 @@ import { prisma } from "../../data/postgres";
 import { CustomError, UserEntity } from "../../domain";
 import { UpdateUserDto } from "../../domain/dtos/user/update-user.dto";
 
+type QueryParams = {
+    email: string;
+    name: string;
+    activated: string;
+};
+
 export class UserService {
     contructor() {}
 
-    async getUsers() {
+    async getUsers(query: Partial<QueryParams>) {
+        const { name, activated = "true", email } = query;
+
         try {
-            const users = await prisma.users.findMany();
+            const isActived = activated === "true" ? true : false;
+
+            const users = await prisma.users.findMany({
+                where: {
+                    email: { contains: email, mode: "insensitive" },
+                    name: { contains: name, mode: "insensitive" },
+                    isActived: isActived,
+                },
+            });
 
             return users.map((u) => UserEntity.fromObject(u));
         } catch (error) {
