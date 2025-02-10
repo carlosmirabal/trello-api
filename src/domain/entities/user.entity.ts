@@ -6,7 +6,7 @@ import { CustomError } from "../errors/custom.error";
 */
 export class UserEntity {
     constructor(
-        public id: string,
+        public id: number,
         public email: string,
         public name: string,
         public lastName?: string,
