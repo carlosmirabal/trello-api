@@ -11,6 +11,7 @@ export class UpdateUserDto {
     static create(object: { [key: string]: any }, userIdToken: number): [string?, UpdateUserDto?] {
         const { id, email, name, lastName, phoneNumber, isActived } = object;
 
+        if (!id) return ["Missing id"];
         if (id !== userIdToken) return ["You can only update your own user"];
 
         return [undefined, new UpdateUserDto(id, email, name, lastName, phoneNumber, isActived)];

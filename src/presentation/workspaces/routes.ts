@@ -18,6 +18,8 @@ export class WorkSpaceRoutes {
         // Routes definition
         router.get("/", controller.getWorkSpaces);
         router.get("/:id", controller.getWorkSpacesById);
+        router.post("/", controller.createWorkSpace);
+        router.put("/:id", controller.updateWorkSpace);
         // router.put("/:id", controller.updateUser);
 
         return router;
